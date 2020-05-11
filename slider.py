@@ -8,16 +8,17 @@ from wtforms.validators import DataRequired
 from flask import redirect
 from wtforms.fields.html5 import EmailField
 from flask_sqlalchemy import SQLAlchemy
+#  from data.__all_models import User, Classroom, Link
+from data.users import User
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://postgres:123@localhost/py_sweater'
 db = SQLAlchemy(app)
 
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-from data.users import User
 @app.route('/')
 @app.route('/index')
 def index():
@@ -58,7 +59,6 @@ from data import db_session
 db_session.global_init("db/blogs.sqlite")
 
 
-
 class RegisterForm(FlaskForm):
     about = StringField("Имя и фамилия")
     email = EmailField('Почта', validators=[DataRequired()])
@@ -73,14 +73,12 @@ def reqister():
     form = RegisterForm()
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
-            return render_template('register.html', title='Регистрация',
-                                   form=form,
-                                   Mark="Пароли не совпадают")
+            form.password_again.errors.append("Пароли не совпадают")
+            return render_template('register.html', title='Регистрация', form=form)
         session = db_session.create_session()
         if session.query(User).filter(User.email == form.email.data).first():
-            return render_template('register.html', title='Регистрация',
-                                   form=form,
-                                   Mark="Такой пользователь уже есть")
+            form.email.errors.append("Такой пользователь уже есть")
+            return render_template('register.html', title='Регистрация', form=form)
         user = User(
             name=form.name.data,
             email=form.email.data,
@@ -103,23 +101,6 @@ def profile():
 @app.route('/marks')
 def marks():
     return "Здесь пока ничего нет..."
-
-
-@app.route('/sample_page')
-def return_sample_page():
-    return f"""<!doctype html>
-                    <html lang="en">
-                      <head>
-                        <meta charset="utf-8">
-                        <link rel="stylesheet" type="text/css" href="{url_for('static', filename='css/style.css')}" />
-                        <title>Привет, Яндекс!</title>
-                      </head>
-                      <body>
-                        <h1>Первая HTML-страница</h1>
-                      </body>
-                    </html>"""
-
-
 
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
