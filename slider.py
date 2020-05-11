@@ -9,7 +9,7 @@ from flask import redirect
 from wtforms.fields.html5 import EmailField
 from flask_sqlalchemy import SQLAlchemy
 #  from data.__all_models import User, Classroom, Link
-from data.users import User
+from data.__all_models import User, Classroom, Link
 
 
 app = Flask(__name__)
@@ -46,7 +46,7 @@ def login():
         user = session.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            return redirect("/")
+            return redirect("/marks")
         return render_template('login.html',
                                Mark="Неправильный логин или пароль",
                                form=form)
@@ -60,11 +60,10 @@ db_session.global_init("db/blogs.sqlite")
 
 
 class RegisterForm(FlaskForm):
-    about = StringField("Имя и фамилия")
     email = EmailField('Почта', validators=[DataRequired()])
     password = PasswordField('Пароль', validators=[DataRequired()])
     password_again = PasswordField('Повторите пароль', validators=[DataRequired()])
-    name = StringField('Номер и буква класса', validators=[DataRequired()])
+    name = StringField('Имя и Фамилия', validators=[DataRequired()])
     submit = SubmitField('Войти')
 
 
@@ -81,8 +80,7 @@ def reqister():
             return render_template('register.html', title='Регистрация', form=form)
         user = User(
             name=form.name.data,
-            email=form.email.data,
-            about=form.about.data
+            email=form.email.data
         )
         user.set_password(form.password.data)
         session.add(user)

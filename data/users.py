@@ -1,4 +1,4 @@
-'''import datetime
+"""import datetime
 import sqlalchemy
 
 from data import db_session
@@ -13,7 +13,6 @@ class User(SqlAlchemyBase, UserMixin):
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
     name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    about = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     email = sqlalchemy.Column(sqlalchemy.String,
                               index=True, unique=True, nullable=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
@@ -25,5 +24,4 @@ class User(SqlAlchemyBase, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.hashed_password, password)
-'''
-
+"""

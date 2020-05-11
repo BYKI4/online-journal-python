@@ -10,7 +10,7 @@ from flask_login import UserMixin
 from sqlalchemy import orm
 
 
-class User(SqlAlchemyBase):
+class User(SqlAlchemyBase, UserMixin):
     __tablename__ = 'user'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -26,8 +26,6 @@ class User(SqlAlchemyBase):
 
     def check_password(self, password):
         return check_password_hash(self.hashed_password, password)
-
-
 
 
 class Classroom(SqlAlchemyBase):
