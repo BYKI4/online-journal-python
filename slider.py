@@ -98,7 +98,7 @@ def profile():
 
 @app.route('/marks')
 def marks():
-    return render_template('marks.html]')
+    return render_template('marks.html')
 
 @app.route('/change_password')
 def change_password():
