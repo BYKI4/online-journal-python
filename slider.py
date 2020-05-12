@@ -1,15 +1,14 @@
 from flask import Flask
 from flask import url_for, request
 from flask import render_template
-from flask_login import LoginManager, login_user
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired
 from flask import redirect
 from wtforms.fields.html5 import EmailField
 from flask_sqlalchemy import SQLAlchemy
-#  from data.__all_models import User, Classroom, Link
-from data.__all_models import User, Classroom, Link
+from data.__all_models import User, Classroom, Link, Marks, GroupOfMarks
 
 
 app = Flask(__name__)
@@ -47,10 +46,15 @@ def login():
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             return redirect("/marks")
-        return render_template('login.html',
-                               Mark="Неправильный логин или пароль",
-                               form=form)
+        form.email.errors.append('Неверный логин или пароль')
+        return render_template('login.html', form=form)
     return render_template('login.html', title='Авторизация', form=form)
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
 
 def main():
     app.run()
@@ -65,6 +69,7 @@ class RegisterForm(FlaskForm):
     password_again = PasswordField('Повторите пароль', validators=[DataRequired()])
     name = StringField('Имя и Фамилия', validators=[DataRequired()])
     submit = SubmitField('Войти')
+    is_teacher = BooleanField('Я - учитель')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -80,7 +85,8 @@ def reqister():
             return render_template('register.html', title='Регистрация', form=form)
         user = User(
             name=form.name.data,
-            email=form.email.data
+            email=form.email.data,
+            is_teacher=form.is_teacher.data
         )
         user.set_password(form.password.data)
         session.add(user)
@@ -96,9 +102,17 @@ def messages():
 def profile():
     return render_template('profile.html')
 
+@app.route('/marks/<classcode>')
+@app.route('/marks')
+
 @app.route('/marks')
 def marks():
-    return render_template('marks.html')
+    if current_user.is_teacher:
+        return redirect("/marks/" + current_user.)
+    mx = 0
+    for i in current_user.group_of_marks:
+        mx = max(mx, len(i.marks))
+    return render_template('marks.html', mx=mx)
 
 @app.route('/change_password')
 def change_password():
