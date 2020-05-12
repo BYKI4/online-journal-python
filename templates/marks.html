@@ -4,5 +4,26 @@
 
 <div align="center"> <font size=7> Табель успеваемости </font></div>
 
-<div align="center"> <font size=6> Здесь пока ничего нет </font></div>
+<div align="center" class="table-responsive">
+    <table class="table">
+        <caption>Табель успеваемости</caption>
+        {% for group in current_user.group_of_marks %}
+            <tr>
+                <th>{{group.name}}</th>
+                {% set a = 0 %}
+                {% for mark in group.marks %}
+                    {% set a = a + 1 %}
+                    <th>
+                        <button type="button" class="btn btn-secondary" data-toggle="popover" title={{mark.date}} data-content="{{mark.comment}}">{{mark.mark}}</button>
+                    </th>
+                {% if loop.last %}
+                    {% for i in range(mx - loop.index) %}
+                        <th></th>
+                    {% endfor %}
+                {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+</div>
 {% endblock %}
