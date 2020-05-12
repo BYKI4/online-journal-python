@@ -18,7 +18,7 @@ class User(SqlAlchemyBase, UserMixin):
     hashed_password = Column(String, nullable=True)
     created_date = Column(DateTime, default=datetime.datetime.now)
 
-    classrooms = orm.relationship('Classroom', secondary='link')
+    classrooms = orm.relationship('Classroom', secondary='link', lazy='subquery')
     group_of_marks = orm.relation('GroupOfMarks', back_populates='user')
 
     def set_password(self, password):
@@ -36,7 +36,7 @@ class Classroom(SqlAlchemyBase):
     name = Column(String, nullable=True)
     created_date = Column(DateTime, default=datetime.datetime.now)
     users = orm.relationship('User', secondary='link')
-    group_of_marks = orm.relationship('GroupOfMarks', back_populates='classroom')
+    group_of_marks = orm.relationship('GroupOfMarks', back_populates='classroom', lazy='subquery')
 
 
 class Link(SqlAlchemyBase):
@@ -52,8 +52,8 @@ class GroupOfMarks(SqlAlchemyBase):
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey('user.id'))
     classroom_id = Column(Integer, ForeignKey('classroom.id'))
-    name = Column(String, default='')
     user = orm.relation('User')
+    name = Column(String, nullable=True)
     classroom = orm.relation('Classroom')
     marks = orm.relation('Marks', back_populates='group_of_marks')
 
@@ -67,3 +67,10 @@ class Marks(SqlAlchemyBase):
     group_of_marks = orm.relation('GroupOfMarks')
     comment = Column(String, default='', nullable=True)
     date = Column(String, default='.'.join([str(0) * (2 - len(str(i))) + str(i) for i in datetime.datetime.now().timetuple()[1:3][::-1]]))
+
+
+class Payload(SqlAlchemyBase):
+    __tablename__ = "payload"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    cur_hash = Column(Integer, nullable=True, default=0)
