@@ -8,10 +8,8 @@
     <table class="table">
         {% for group in current_user.group_of_marks %}
             <tr>
-                <th><font size=5>{{group.classroom.name}}</font></th>
-                {% set a = 0 %}
+                <th><button type="button" class="btn btn-light" data-toggle="popover" title="Код класса" data-content="{{group.classroom.code}}"><font size=3>{{group.classroom.name}}</font></button></th>
                 {% for mark in group.marks %}
-                    {% set a = a + 1 %}
                     <th>
                         <button type="button" class="{{ "btn btn-danger" if mark.mark == 2 else "btn btn-warning" if mark.mark == 3 else "btn btn-primary" if mark.mark == 4 else "btn btn-success" }}" data-toggle="popover" title={{mark.date}} data-content="{{mark.comment}}">{{mark.mark}}</button>
                     </th>
@@ -25,7 +23,4 @@
         {% endfor %}
     </table>
 </div>
-<div align="right">
-<a type="button" class="btn btn-info" href="http://127.0.0.1:8080/add_mark" >Поставить оценку</a></div>
-
 {% endblock %}

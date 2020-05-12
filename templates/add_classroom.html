@@ -5,15 +5,13 @@
     <form action="" method="post">
         {{ form.hidden_tag() }}
         <p> <font size="4">
-             {{ form.class.label }}<br>
-             {{ form.class(class="form-control", type="email") }}<br>
-             {% for error in form.class.errors %}
+             {{ form.code.label }}<br>
+             {{ form.code(class="form-control") }}<br>
+             {% for error in form.code.errors %}
                  <div class="alert alert-danger" role="alert">
                      {{ error }}
                  </div>
             {% endfor %}
        </font> </p>
         <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p></form>
-
-
 {% endblock %}

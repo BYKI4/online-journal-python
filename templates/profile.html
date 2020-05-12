@@ -5,7 +5,7 @@
 <div align="center">
 <div align="center", class="card" style="width: 18rem;">
   <div class="card-body">
-     <h5 class="card-title">Карточка ученика</h5>
+     <h5 class="card-title">Карточка {{"учителя" if current_user.is_teacher else "ученика"}}</h5>
 
   </div>
     <div class="card-header">
@@ -24,12 +24,11 @@
     <div class="card-footer text-muted">
     Карточка была создана - {{current_user.created_date}}
   </div>
-
 </div></div>
 <br>
 <br>
-<a type="button" class="btn btn-info" href="http://127.0.0.1:8080/create_classroom">Добавить класс</a>
-
-
+<div align="center">
+    <a type="button" class="btn btn-info" href="http://127.0.0.1:8080/create_classroom">Добавить класс</a>
+</div>
 
 {% endblock %}

@@ -41,6 +41,7 @@
             </p>
         {% endfor %}
     </p>
+    <p>{{ form.is_teacher() }} {{ form.is_teacher.label }}</p>
     <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
     {{message}}
 </form>
