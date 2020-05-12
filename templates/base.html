@@ -11,13 +11,13 @@
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-light bg-light">
+    <div class="navbar navbar-light bg-light">
         <div class="alert alert-danger" role="alert">
             <a class="navbar-brand" href="{{ url_for('marks') }}">Электронный журнал</a></div>
-         <div align="right"> <font size=4> <a href="{{ url_for('marks') }}">Оценки</a> &nbsp;
-        <a href="{{ url_for('profile') }}">Профиль</a> &nbsp;
-             <a href="{{ url_for('messages') }}">Сообщения</a>
-    </font></div>
+         <div align="right"> <a type="button" class="btn btn-success" href="marks" >Оценки</a> 
+        <a type="button" class="btn btn-primary" href="profile" >Профиль</a>
+             <a type="button" class="btn btn-danger" href="logout" >Выйти</a>
+         </div></div>
     </nav>
 
 

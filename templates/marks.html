@@ -6,15 +6,14 @@
 
 <div align="center" class="table-responsive">
     <table class="table">
-        <caption>Табель успеваемости</caption>
         {% for group in current_user.group_of_marks %}
             <tr>
-                <th>{{group.name}}</th>
+                <th><font size=5>{{group.classroom.name}}</font></th>
                 {% set a = 0 %}
                 {% for mark in group.marks %}
                     {% set a = a + 1 %}
                     <th>
-                        <button type="button" class="btn btn-secondary" data-toggle="popover" title={{mark.date}} data-content="{{mark.comment}}">{{mark.mark}}</button>
+                        <button type="button" class="{{ "btn btn-danger" if mark.mark == 2 else "btn btn-warning" if mark.mark == 3 else "btn btn-primary" if mark.mark == 4 else "btn btn-success" }}" data-toggle="popover" title={{mark.date}} data-content="{{mark.comment}}">{{mark.mark}}</button>
                     </th>
                 {% if loop.last %}
                     {% for i in range(mx - loop.index) %}
@@ -26,4 +25,7 @@
         {% endfor %}
     </table>
 </div>
+<div align="right">
+<a type="button" class="btn btn-info" href="http://127.0.0.1:8080/add_mark" >Поставить оценку</a></div>
+
 {% endblock %}

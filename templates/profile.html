@@ -1,11 +1,35 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div align="center"> <font size=7>Личный Кабинет </font></div>
-<p> <font size=3> Имя и фамилия - {{current_user.name}} <br>
-    Почта - {{current_user.email}}<br>
-    Доступные классы - {{current_user.classrooms}}<br>
-    Аккаунт был создан - {{current_user.created_date}}</font></p>
+<div align="center"> <font size=7>Личный Кабинет </font></div><br><br>
+<div align="center">
+<div align="center", class="card" style="width: 18rem;">
+  <div class="card-body">
+     <h5 class="card-title">Карточка ученика</h5>
 
-<a href="{{ url_for('change_password') }}">Сменить пароль</a>
+  </div>
+    <div class="card-header">
+    Личные данные
+  </div>
+    <ul class="list-group list-group-flush">
+    <li class="list-group-item">Имя и фамилия - {{current_user.name}}</li>
+    <li class="list-group-item">Почта - {{current_user.email}}</li>
+   </ul>
+    <button type="button" class="btn btn-secondary" data-container="body" data-toggle="popover" data-placement="right" data-content="{{', '.join(a)}}" >
+  Доступные классы
+    </button>
+    <div class="card-body", align="center">
+    <a href="{{ url_for('change_password') }}" class="card-link"> Смена Пароля</a>
+</div>
+    <div class="card-footer text-muted">
+    Карточка была создана - {{current_user.created_date}}
+  </div>
+
+</div></div>
+<br>
+<br>
+<a type="button" class="btn btn-info" href="http://127.0.0.1:8080/create_classroom">Добавить класс</a>
+
+
+
 {% endblock %}
