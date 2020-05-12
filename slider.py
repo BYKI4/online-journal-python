@@ -22,7 +22,7 @@ login_manager.init_app(app)
 @app.route('/index')
 def index():
     param = {}
-    param['username'] = "Учащийся"
+    param['username'] = "Пользователь"
     param['title'] = 'Домашняя страница'
     return render_template("index.html", **param)
 
@@ -115,6 +115,7 @@ def marks_teacher(classcode):
     session = db_session.create_session()
     classroom = session.query(Classroom).filter(Classroom.code == classcode).first()
     for i in classroom.group_of_marks:
+        print(i.name)
         mx = max(mx, len(i.marks))
     return render_template('marks_for_teacher.html', mx=mx, classcode=classcode, title='Табель успеваемости', classroom=classroom)
 
@@ -181,8 +182,20 @@ def add_mark(code):
         flag = False
         for user in classroom.users:
             if user.email == form.email.data:
+                pending_user = user
                 flag = True
-        if 
+        if not flag:
+            form.email.errors.append("Такого ученика нет в вашем классе")
+            return render_template('add_mark.html', form=form, title='Выставление оценок')
+        if form.mark.data not in [2, 3, 4, 5]:
+            form.mark.errors.append("Оценка введена неверно")
+            return render_template('add_mark.html', form=form, title='Выставление оценок')
+        group = session.query(GroupOfMarks).filter(GroupOfMarks.user_id == pending_user.id).first()
+        mark = Marks(comment=form.comment.data, mark=form.mark.data)
+        group.marks.append(mark)
+        group.total = group.total + form.mark.data
+        session.commit()
+        return render_template('mark_was_added.html', title='Успех!', code=code)
     return render_template('add_mark.html', form=form, title='Выставление оценок')
 
 
@@ -194,6 +207,7 @@ class ClassroomCreateForm(FlaskForm):
 @app.route('/your_code/<code>')
 def show_code(code):
     return render_template('your_code.html', title='Ваш код', insert_text=f"Ваш код от нового класса: {code}. Отправьте его своим ученикам")
+
 
 @app.route('/create_classroom', methods=['POST', 'GET'])
 def create_classroom():
@@ -264,6 +278,7 @@ if __name__ == '__main__':
     p = 26
     MOD = p ** 5
     step = 288453275
+
     s = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     sl = {}
     for i in range(26):
