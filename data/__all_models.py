@@ -53,6 +53,7 @@ class GroupOfMarks(SqlAlchemyBase):
     user_id = Column(Integer, ForeignKey('user.id'))
     classroom_id = Column(Integer, ForeignKey('classroom.id'))
     user = orm.relation('User')
+    total = Column(Integer, nullable=True, default=0)
     name = Column(String, nullable=True)
     classroom = orm.relation('Classroom')
     marks = orm.relation('Marks', back_populates='group_of_marks')
@@ -73,4 +74,4 @@ class Payload(SqlAlchemyBase):
     __tablename__ = "payload"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    cur_hash = Column(Integer, nullable=True, default=0)
+    cur_hash = Column(Integer, nullable=True, default=92734)
