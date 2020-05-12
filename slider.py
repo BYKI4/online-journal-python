@@ -55,6 +55,8 @@ def login():
 @app.route('/logout')
 @login_required
 def logout():
+    if not current_user.is_authenticated:
+        return redirect("/index")
     logout_user()
     return redirect("/")
 
@@ -102,6 +104,8 @@ def messages():
 
 @app.route('/profile')
 def profile():
+    if not current_user.is_authenticated:
+        return redirect("/index")
     a = []
     for clas in current_user.classrooms:
         a.append(clas.code + ' - ' + clas.name)
@@ -109,6 +113,8 @@ def profile():
 
 @app.route('/marks/<classcode>')
 def marks_teacher(classcode):
+    if not current_user.is_authenticated:
+        return redirect("/index")
     if not current_user.is_teacher:
         return redirect('/marks')
     mx = 0
@@ -123,6 +129,8 @@ def marks_teacher(classcode):
 
 @app.route('/marks')
 def marks():
+    if not current_user.is_authenticated:
+        return redirect("/index")
     if current_user.is_teacher:
         for i in current_user.classrooms:
             return redirect("/marks/" + i.code)
@@ -139,6 +147,8 @@ class ClassroomAddForm(FlaskForm):
 
 @app.route('/add_classroom', methods=['POST', 'GET'])
 def add_classroom():
+    if not current_user.is_authenticated:
+        return redirect("/index")
     form = ClassroomAddForm()
     if current_user.is_teacher:
         return redirect('/create_classroom')
@@ -177,6 +187,8 @@ class AddMarkForm(FlaskForm):
 
 @app.route('/add_mark/<code>', methods=['GET', 'POST'])
 def add_mark(code):
+    if not current_user.is_authenticated:
+        return redirect("/index")
     form = AddMarkForm()
     if form.validate_on_submit():
         session = db_session.create_session()
@@ -214,6 +226,8 @@ def show_code(code):
 
 @app.route('/create_classroom', methods=['POST', 'GET'])
 def create_classroom():
+    if not current_user.is_authenticated:
+        return redirect("/index")
     form = ClassroomCreateForm()
     if not current_user.is_teacher:
         return redirect('/add_classroom')
@@ -248,6 +262,8 @@ class ChangePassword(FlaskForm):
 
 @app.route('/change_password', methods=['GET', 'POST'])
 def change_password():
+    if not current_user.is_authenticated:
+        return redirect("/index")
     form = ChangePassword()
     if form.validate_on_submit():
         if form.new_password.data != form.new_password_again.data:
