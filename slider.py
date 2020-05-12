@@ -116,6 +116,8 @@ def marks_teacher(classcode):
     classroom = session.query(Classroom).filter(Classroom.code == classcode).first()
     for i in classroom.group_of_marks:
         print(i.name)
+        for j in i.marks:
+            print(j.mark, j.comment)
         mx = max(mx, len(i.marks))
     return render_template('marks_for_teacher.html', mx=mx, classcode=classcode, title='Табель успеваемости', classroom=classroom)
 
@@ -190,10 +192,11 @@ def add_mark(code):
         if form.mark.data not in [2, 3, 4, 5]:
             form.mark.errors.append("Оценка введена неверно")
             return render_template('add_mark.html', form=form, title='Выставление оценок')
-        group = session.query(GroupOfMarks).filter(GroupOfMarks.user_id == pending_user.id).first()
+        group = session.query(GroupOfMarks).filter(GroupOfMarks.user_id == pending_user.id, GroupOfMarks.classroom_id == classroom.id).first()
         mark = Marks(comment=form.comment.data, mark=form.mark.data)
         group.marks.append(mark)
         group.total = group.total + form.mark.data
+        session.add(mark)
         session.commit()
         return render_template('mark_was_added.html', title='Успех!', code=code)
     return render_template('add_mark.html', form=form, title='Выставление оценок')
